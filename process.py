@@ -67,7 +67,7 @@ class Process :
 
     def get_direct_exchanges(self):
         cmd  = "sudo rabbitmqctl list_exchanges"
-        passwd = "771589"
+        passwd = "000000"
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         exchanges = proc.communicate(passwd)
         direct_exchanges = []
