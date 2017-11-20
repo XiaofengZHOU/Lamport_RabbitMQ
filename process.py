@@ -4,14 +4,8 @@ import random
 import thread
 import time
 import argparse
-"""
-to test :
-    1. publish and subscribe case : the influence of the routing key                                 -> routing key is ignored
-    2. whether the server knows the connection and the disconnection of a client                     -> fuction get_direct_exchanges
-    3. do we need to use direct exchange to reply the request message of a process.
-     this means we have to declare 2 exchanges, one for multicast another for direct exchange.
-     Or we can just use routing key in multicast to solve the problem.                               -> two types of exchange, fanout and direct
-"""
+from datetime import datetime
+
 
 class LogicalTime(object):
     def __init__(self):
@@ -104,7 +98,7 @@ class Process :
         reply_channel.basic_publish(exchange    = id,
                                     routing_key = id,
                                     body        = message)
-        print("send message : " + message)
+        print("[" + self.id+ "]\t" + str(datetime.now()) + "\tsend message : " + message)
 
     def multicast_request(self,id):
         logical_time = self.logical_time.logical_time
@@ -115,7 +109,7 @@ class Process :
         self.multicast_channel.basic_publish(exchange    = 'Lamport',
                                              routing_key = '',
                                              body        = message)
-        print("send message : " + message)
+        print("[" + self.id+ "]\t" + str(datetime.now()) + "\tsend message : " + message)
 
 
 
@@ -130,7 +124,7 @@ class Process :
         self.multicast_channel.basic_publish(exchange    = 'Lamport',
                                              routing_key = '',
                                              body        = message)
-        print("send message : " + message)
+        print("[" + self.id+ "]\t" + str(datetime.now()) + "\tsend message : " + message)
 
 
     def get_first_of_queue(self):
@@ -176,7 +170,7 @@ class Process :
         if message not in ["ok","request","release"]:
             return
 
-        print("receive message : " + message_total)
+        print("[" + self.id+ "]\t" + str(datetime.now()) + "\treceive message : " + message_total)
         self.logical_time.remote_event(logical_time)
         if message == 'ok':
             self.add_to_reply_messages(id,logical_time)
